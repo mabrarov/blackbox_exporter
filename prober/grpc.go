@@ -144,7 +144,7 @@ func ProbeGRPC(ctx context.Context, target string, module config.Module, registr
 		return false
 	}
 
-	ip, lookupTime, err := chooseProtocol(ctx, module.GRPC.PreferredIPProtocol, module.GRPC.IPProtocolFallback, targetHost, registry, logger)
+	ip, lookupTime, err := chooseProtocol(ctx, module.GRPC.PreferredIPProtocol, module.GRPC.RandomResolvedIP, module.GRPC.IPProtocolFallback, targetHost, registry, logger)
 	if err != nil {
 		logger.Error("Error resolving address", "err", err)
 		return false

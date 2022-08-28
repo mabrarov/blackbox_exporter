@@ -149,8 +149,9 @@ modules:
   # Whether to enable HTTP2.
   [ enable_http2: <bool> | default: true ]
 
-  # The IP protocol of the HTTP probe (ip4, ip6).
+  # The IP protocol of the HTTP probe (ip4, ip6, random or first address from the list of resolved addresses).
   [ preferred_ip_protocol: <string> | default = "ip6" ]
+  [ random_resolved_ip: <boolean> | default = false ]
   [ ip_protocol_fallback: <boolean> | default = true ]
 
   # The body of the HTTP request used in probe.
@@ -174,8 +175,9 @@ regexp: <regex>,
 
 ```yml
 
-# The IP protocol of the TCP probe (ip4, ip6).
+# The IP protocol of the TCP probe (ip4, ip6, random or first address from the list of resolved addresses).
 [ preferred_ip_protocol: <string> | default = "ip6" ]
+[ random_resolved_ip: <boolean> | default = false ]
 [ ip_protocol_fallback: <boolean | default = true> ]
 
 # The source IP address.
@@ -212,8 +214,9 @@ tls_config:
 
 ```yml
 
-# The IP protocol of the DNS probe (ip4, ip6).
+# The IP protocol of the DNS probe (ip4, ip6, random or first address from the list of resolved addresses).
 [ preferred_ip_protocol: <string> | default = "ip6" ]
+[ random_resolved_ip: <boolean> | default = false ]
 [ ip_protocol_fallback: <boolean | default = true> ]
 
 # The source IP address.
@@ -288,8 +291,9 @@ validate_additional_rrs:
 
 ```yml
 
-# The IP protocol of the ICMP probe (ip4, ip6).
+# The IP protocol of the ICMP probe (ip4, ip6, random or first address from the list of resolved addresses).
 [ preferred_ip_protocol: <string> | default = "ip6" ]
+[ random_resolved_ip: <boolean> | default = false ]
 [ ip_protocol_fallback: <boolean | default = true> ]
 
 # The source IP address.
@@ -315,8 +319,9 @@ validate_additional_rrs:
 # The service name to query for health status.
 [ service: <string> ]
 
-# The IP protocol of the gRPC probe (ip4, ip6).
+# The IP protocol of the gRPC probe (ip4, ip6, random or first address from the list of resolved addresses).
 [ preferred_ip_protocol: <string> ]
+[ random_resolved_ip: <boolean> | default = false ]
 [ ip_protocol_fallback: <boolean> | default = true ]
 
 # Whether to connect to the endpoint with TLS.

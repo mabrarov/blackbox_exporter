@@ -21,6 +21,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
+	"log/slog"
 	"math/big"
 	"net"
 	"slices"
@@ -146,21 +147,40 @@ func TestChooseProtocol(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping network dependent test")
 	}
-	ctx := context.Background()
-	registry := prometheus.NewPedanticRegistry()
 	logger := promslog.New(&promslog.Config{})
+	checkChosenProtocol(context.Background(), false, logger, t)
+	checkChosenProtocol(context.Background(), true, logger, t)
+}
 
-	ip, _, err := chooseProtocol(ctx, "ip4", true, "ipv6.google.com", registry, logger)
+func checkChosenProtocol(ctx context.Context, randomResolvedIP bool, logger *slog.Logger, t *testing.T) {
+	checkChosenProtocolWithoutFallback(ctx, "ip4", randomResolvedIP, "ipv6.google.com", logger, t)
+	checkChosenProtocolWithoutFallback(ctx, "ip6", randomResolvedIP, "ipv4.google.com", logger, t)
+	ip := checkChosenProtocolWithFallback(ctx, "ip4", randomResolvedIP, "ipv6.google.com", logger, t)
+	if ip == nil || ip.IP.To4() != nil {
+		t.Error("with fallback it should answer IPv6")
+	}
+	ip = checkChosenProtocolWithFallback(ctx, "ip6", randomResolvedIP, "ipv4.google.com", logger, t)
+	if ip == nil || ip.IP.To4() == nil {
+		t.Error("with fallback it should answer IPv4")
+	}
+	if checkChosenProtocolWithFallback(ctx, "ipv4", randomResolvedIP, "google.com", logger, t) == nil {
+		t.Error("with fallback it should answer")
+	}
+	if checkChosenProtocolWithFallback(ctx, "ipv6", randomResolvedIP, "google.com", logger, t) == nil {
+		t.Error("with fallback it should answer")
+	}
+}
+
+func checkChosenProtocolWithFallback(ctx context.Context, IPProtocol string, randomResolvedIP bool, target string, logger *slog.Logger, t *testing.T) (ip *net.IPAddr) {
+	addr, _, err := chooseProtocol(ctx, IPProtocol, randomResolvedIP, true, target, prometheus.NewPedanticRegistry(), logger)
 	if err != nil {
 		t.Error(err)
 	}
-	if ip == nil || ip.IP.To4() != nil {
-		t.Error("with fallback it should answer")
-	}
+	return addr
+}
 
-	registry = prometheus.NewPedanticRegistry()
-
-	ip, _, err = chooseProtocol(ctx, "ip4", false, "ipv6.google.com", registry, logger)
+func checkChosenProtocolWithoutFallback(ctx context.Context, IPProtocol string, randomResolvedIP bool, target string, logger *slog.Logger, t *testing.T) {
+	ip, _, err := chooseProtocol(ctx, IPProtocol, randomResolvedIP, false, target, prometheus.NewPedanticRegistry(), logger)
 	if err != nil && !err.(*net.DNSError).IsNotFound {
 		t.Error(err)
 	} else if err == nil {
