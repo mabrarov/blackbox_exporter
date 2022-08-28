@@ -206,6 +206,7 @@ type HTTPProbe struct {
 	ValidStatusCodes             []int                   `yaml:"valid_status_codes,omitempty"`
 	ValidHTTPVersions            []string                `yaml:"valid_http_versions,omitempty"`
 	IPProtocol                   string                  `yaml:"preferred_ip_protocol,omitempty"`
+	RandomResolvedIP             bool                    `yaml:"random_resolved_ip,omitempty"`
 	IPProtocolFallback           bool                    `yaml:"ip_protocol_fallback,omitempty"`
 	SkipResolvePhaseWithProxy    bool                    `yaml:"skip_resolve_phase_with_proxy,omitempty"`
 	NoFollowRedirects            *bool                   `yaml:"no_follow_redirects,omitempty"`
@@ -228,6 +229,7 @@ type GRPCProbe struct {
 	Service             string           `yaml:"service,omitempty"`
 	TLS                 bool             `yaml:"tls,omitempty"`
 	TLSConfig           config.TLSConfig `yaml:"tls_config,omitempty"`
+	RandomResolvedIP    bool             `yaml:"random_resolved_ip,omitempty"`
 	IPProtocolFallback  bool             `yaml:"ip_protocol_fallback,omitempty"`
 	PreferredIPProtocol string           `yaml:"preferred_ip_protocol,omitempty"`
 }
@@ -252,6 +254,7 @@ type QueryResponse struct {
 
 type TCPProbe struct {
 	IPProtocol         string           `yaml:"preferred_ip_protocol,omitempty"`
+	RandomResolvedIP   bool             `yaml:"random_resolved_ip,omitempty"`
 	IPProtocolFallback bool             `yaml:"ip_protocol_fallback,omitempty"`
 	SourceIPAddress    string           `yaml:"source_ip_address,omitempty"`
 	QueryResponse      []QueryResponse  `yaml:"query_response,omitempty"`
@@ -261,6 +264,7 @@ type TCPProbe struct {
 
 type ICMPProbe struct {
 	IPProtocol         string `yaml:"preferred_ip_protocol,omitempty"` // Defaults to "ip6".
+	RandomResolvedIP   bool   `yaml:"random_resolved_ip,omitempty"`
 	IPProtocolFallback bool   `yaml:"ip_protocol_fallback,omitempty"`
 	SourceIPAddress    string `yaml:"source_ip_address,omitempty"`
 	PayloadSize        int    `yaml:"payload_size,omitempty"`
@@ -270,6 +274,7 @@ type ICMPProbe struct {
 
 type DNSProbe struct {
 	IPProtocol         string           `yaml:"preferred_ip_protocol,omitempty"`
+	RandomResolvedIP   bool             `yaml:"random_resolved_ip,omitempty"`
 	IPProtocolFallback bool             `yaml:"ip_protocol_fallback,omitempty"`
 	DNSOverTLS         bool             `yaml:"dns_over_tls,omitempty"`
 	TLSConfig          config.TLSConfig `yaml:"tls_config,omitempty"`
