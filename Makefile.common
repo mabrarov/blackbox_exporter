@@ -27,7 +27,8 @@ unexport GOBIN
 
 GO           ?= go
 GOFMT        ?= $(GO)fmt
-FIRST_GOPATH := $(firstword $(subst :, ,$(shell $(GO) env GOPATH)))
+GOPATH_UNIX  := $(shell uname -s | grep -E '^(MSYS|MINGW).*' > /dev/null && echo "$$(cygpath "$$($(GO) env GOPATH)")" || echo "$$($(GO) env GOPATH)")
+FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH_UNIX)))
 GOOPTS       ?=
 GOHOSTOS     ?= $(shell $(GO) env GOHOSTOS)
 GOHOSTARCH   ?= $(shell $(GO) env GOHOSTARCH)
